@@ -31,11 +31,21 @@ public class VisualTester extends PApplet {
 		background(255);
 		if (images.size() > 0) {
 			current_image = images.get(currentImageIndex);
-			image(current_image, 0, 0);			// display image i
+			image(current_image, 0, 0); // display image i
+
+			fill(0);
+			text(mouseX + ", " + mouseY, mouseX, mouseY);
+
+			int w = 20, h = 20;
+			
+			int count = OpticalMarkReader.countBlackPixels(mouseY, mouseX, w, h, current_image, 25);
+			text(count, mouseX, mouseY+40);
 		}
 	}
 
 	public void mouseReleased() {
-		currentImageIndex = (currentImageIndex + 1) % images.size();			// increment current image
+		currentImageIndex = (currentImageIndex + 1) % images.size(); // increment
+																		// current
+																		// image
 	}
 }
