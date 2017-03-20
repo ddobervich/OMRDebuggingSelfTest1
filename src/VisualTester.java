@@ -36,16 +36,14 @@ public class VisualTester extends PApplet {
 			fill(0);
 			text(mouseX + ", " + mouseY, mouseX, mouseY);
 
-			int w = 20, h = 20;
+			// YOU CAN ADD YOUR OWN VISUAL TESTS HERE
 			
-			int count = OpticalMarkReader.countBlackPixels(mouseY, mouseX, w, h, current_image, 25);
-			text(count, mouseX, mouseY+40);
 		}
 	}
 
 	public void mouseReleased() {
 		currentImageIndex = (currentImageIndex + 1) % images.size(); // increment
-																		// current
-																		// image
+																     // current
+																	 // image
 	}
 }

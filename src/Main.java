@@ -15,7 +15,7 @@ public class Main {
 		ArrayList<PImage> images = PDFHelper.getPImagesFromPdf(PDF_PATH);
 
 		System.out.println("Scoring all pages...");
-		scoreAllPages(images);
+		scoreAllPages(images, format);
 
 		System.out.println("Complete!");
 
@@ -43,19 +43,19 @@ public class Main {
 	 * @param images
 	 *            List of images corresponding to each page of original pdf
 	 */
-	private static void scoreAllPages(ArrayList<PImage> images) {
+	private static void scoreAllPages(ArrayList<PImage> images, Format format) {
 		ArrayList<AnswerSheet> scoredSheets = new ArrayList<AnswerSheet>();
 
 		// Score the first page as the key
-		AnswerSheet key = markReader.processPageImage(images.get(0));
+		AnswerSheet key = markReader.processPageImage(images.get(0), format);
 
 		for (int i = 1; i < images.size(); i++) {
 			PImage image = images.get(i);
 
 			System.out.println("Processing page " + i + "----------------");
-			AnswerSheet answers = markReader.processPageImage(image);
-
-			// do something with answers
+			AnswerSheet answers = markReader.processPageImage(image, format);
+			
+			System.out.println(answers);
 		}
 	}
 }

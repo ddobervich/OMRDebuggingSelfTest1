@@ -17,8 +17,10 @@ public class OpticalMarkReader {
 	 * @return
 	 */
 	public AnswerSheet processPageImage(PImage image, Format format) {
+		AnswerSheet answerSheet = new AnswerSheet();
+
 		image.filter(PImage.GRAY); // filter as grayscale
-		image.loadPixels();        // load values into .pixels array
+		image.loadPixels(); // load values into .pixels array
 
 		for (int questionRow = 0; questionRow < 25; questionRow++) {
 			for (int questionCol = 0; questionCol < 4; questionCol++) {
@@ -26,15 +28,22 @@ public class OpticalMarkReader {
 				int row = format.getQuestionStartRow() + questionRow * format.getQuestionRowSpacing();
 				int col = format.getQuestionStartCol() + questionCol * format.getQuestionColSpacing();
 
-				int[] results = checkRowOfBoxes(row, col, format.getBoxWidth(), format.getBoxHeight(), format.getBubbleColSpacing(), 5, image, format.getBLACK_THRESHOLD());
+				int[] results = checkRowOfBoxes(row, col, format.getBoxWidth(), format.getBoxHeight(),
+						format.getBubbleColSpacing(), 5, image, format.getBLACK_THRESHOLD());
 				int COUNT_THRESHOLD = (int) (averageOf(results) * 1.15);
 				List<Integer> answers = boxCountsToAnswer(results, COUNT_THRESHOLD);
 
-				
+				if (answers.size() == 0) {
+					answerSheet.addAnswer(-1);
+				} else {
+					answerSheet.addAnswer(answers.get(0)); // if multiple
+															// bubbles, only
+															// count the first
+				}
 			}
 		}
 
-		return null;
+		return answerSheet;
 	}
 
 	private double averageOf(int[] results) {
@@ -71,7 +80,7 @@ public class OpticalMarkReader {
 		int[] results = new int[numBoxes];
 
 		for (int i = 0; i < numBoxes; i++) {
-			results[i] = countBlackPixels(startRow, startCol + i * boxHSpacing, boxWidth, boxHeight, image, THRESHOLD);
+			results[i] = countBlackPixels(startRow, startCol, boxWidth, boxHeight, image, THRESHOLD);
 		}
 
 		return results;
@@ -97,8 +106,8 @@ public class OpticalMarkReader {
 	 */
 	public static int countBlackPixels(int startRow, int startCol, int width, int height, PImage image, int THRESHOLD) {
 		int count = 0;
-		for (int row = startRow; row < startRow + height; row++) {
-			for (int col = startCol; col < startCol + width; col++) {
+		for (int row = startRow; row < height; row++) {
+			for (int col = startCol; col < width; col++) {
 				if (getPixelAt(row, col, image) < THRESHOLD) {
 					count++;
 				}
